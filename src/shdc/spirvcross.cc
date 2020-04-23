@@ -149,6 +149,27 @@ static spirvcross_refl_t parse_reflection(const Compiler& compiler) {
         refl_attr.name = res_attr.name;
         refl_attr.sem_name = "TEXCOORD";
         refl_attr.sem_index = refl_attr.slot;
+        //lx add
+        const SPIRType& attr_type = compiler.get_type(res_attr.type_id);
+        assert(attr_type.basetype == SPIRType::Float);
+        switch (attr_type.vecsize) {
+            case 1:
+                refl_attr.type = attr_t::FLOAT1;
+                break;
+            case 2:
+                refl_attr.type = attr_t::FLOAT2;
+                break;
+            case 3:
+                refl_attr.type = attr_t::FLOAT3;
+                break;
+            case 4:
+                refl_attr.type = attr_t::FLOAT4;
+                break;
+            default:
+                assert(0);
+                break;
+        }
+        //end
         refl.inputs[refl_attr.slot] = refl_attr;
     }
     for (const Resource& res_attr: shd_resources.stage_outputs) {
@@ -157,6 +178,27 @@ static spirvcross_refl_t parse_reflection(const Compiler& compiler) {
         refl_attr.name = res_attr.name;
         refl_attr.sem_name = "TEXCOORD";
         refl_attr.sem_index = refl_attr.slot;
+        //lx add
+        const SPIRType& attr_type = compiler.get_type(res_attr.type_id);
+        assert(attr_type.basetype == SPIRType::Float);
+        switch (attr_type.vecsize) {
+            case 1:
+                refl_attr.type = attr_t::FLOAT1;
+                break;
+            case 2:
+                refl_attr.type = attr_t::FLOAT2;
+                break;
+            case 3:
+                refl_attr.type = attr_t::FLOAT3;
+                break;
+            case 4:
+                refl_attr.type = attr_t::FLOAT4;
+                break;
+            default:
+                assert(0);
+                break;
+        }
+        //end
         refl.outputs[refl_attr.slot] = refl_attr;
     }
     // uniform blocks

@@ -62,6 +62,7 @@ struct format_t	{
         SOKOL_DECL,
         SOKOL_IMPL,
         BARE,
+        LXTAP,
         NUM,
         INVALID,
     };
@@ -72,6 +73,7 @@ struct format_t	{
             case SOKOL_DECL:    return "sokol_decl";
             case SOKOL_IMPL:    return "sokol_impl";
             case BARE:          return "bare";
+            case LXTAP:         return "lxtap";
             default:            return "<invalid>";
         }
     }
@@ -87,6 +89,9 @@ struct format_t	{
         }
         else if (str == "bare") {
             return BARE;
+        }
+        else if (str == "lxtap") {
+            return LXTAP;
         }
         else {
             return INVALID;
@@ -161,7 +166,7 @@ struct args_t {
     std::string tmpdir;                 // directory for temporary files
     uint32_t slang = 0;                 // combined slang_t bits
     bool byte_code = false;             // output byte code (for HLSL and MetalSL)
-    format_t::type_t output_format = format_t::SOKOL; // output format
+    format_t::type_t output_format = format_t::LXTAP; // output format
     bool debug_dump = false;            // print debug-dump info
     bool no_ifdef = false;              // don't emit platform #ifdefs (SOKOL_D3D11 etc...)
     int gen_version = 1;                // generator-version stamp
@@ -306,12 +311,33 @@ struct attr_t {
     std::string name;
     std::string sem_name;
     int sem_index = 0;
+    enum type_t {
+        INVALID,
+        FLOAT1 = 1,
+        FLOAT2 = 2,
+        FLOAT3 = 3,
+        FLOAT4 = 4,
+    };
+    
+    type_t type = INVALID;
+    
 
     bool equals(const attr_t& rhs) const {
         return (slot == rhs.slot) &&
                (name == rhs.name) &&
                (sem_name == rhs.sem_name) &&
-               (sem_index == rhs.sem_index);
+               (sem_index == rhs.sem_index) &&
+               (type == rhs.type);
+    }
+    
+    static const char* type_to_str(type_t t) {
+        switch (t) {
+            case FLOAT1:    return "FLOAT";
+            case FLOAT2:    return "FLOAT2";
+            case FLOAT3:    return "FLOAT3";
+            case FLOAT4:    return "FLOAT4";
+            default:        return "INVALID";
+        }
     }
 };
 
@@ -465,6 +491,10 @@ struct bytecode_t {
 
 /* C header-generator for sokol_gfx.h */
 struct sokol_t {
+    static errmsg_t gen(const args_t& args, const input_t& inp, const std::array<spirvcross_t,slang_t::NUM>& spirvcross, const std::array<bytecode_t,slang_t::NUM>& bytecode);
+};
+
+struct lxtap_t {
     static errmsg_t gen(const args_t& args, const input_t& inp, const std::array<spirvcross_t,slang_t::NUM>& spirvcross, const std::array<bytecode_t,slang_t::NUM>& bytecode);
 };
 

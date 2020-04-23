@@ -121,6 +121,7 @@ static void write_header(const args_t& args, const input_t& inp, const spirvcros
                 L("                    ATTR_{}{}_{} = {}\n", mod_prefix(inp), vs_snippet.name, attr.name, attr.slot);
             }
         }
+        
         for (const uniform_block_t& ub: vs_src.refl.uniform_blocks) {
             L("                Uniform block '{}':\n", ub.name);
             L("                    C struct: {}{}_t\n", mod_prefix(inp), ub.name);
@@ -464,6 +465,7 @@ errmsg_t sokol_t::gen(const args_t& args, const input_t& inp,
             if (err.valid) {
                 return err;
             }
+            
             if (!comment_header_written) {
                 write_header(args, inp, spirvcross[i]);
                 comment_header_written = true;
